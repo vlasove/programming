@@ -5,20 +5,27 @@
 
 using namespace std;
 
-string FindByYear(int year, map<int, string> &m)
+int FindByYear(int year, const map<int, string>& m)
 {
-    string answer = "";
-    if (m.empty())
+    int answer = 0;
+    vector<int> prompt;
+    for (auto p : m)
+    {
+        prompt.push_back(p.first);
+    }
+
+    if (prompt.empty())
     {
         return answer;
     }
     else
     {
-        for (auto p : m)
+
+        for (auto i : prompt)
         {
-            if (p.first <= year)
+            if (i <= year)
             {
-                answer = p.second;
+                answer = i;
             }
         }
     }
@@ -38,21 +45,21 @@ public:
     }
     string GetFullName(int year)
     {
-        if (names.empty() && last_names.empty())
+        if (FindByYear(year, names) == 0 && FindByYear(year, last_names) == 0)
         {
-            cout << "Incognito" << endl;
+            return "Incognito";
         }
-        else if (FindByYear(year, names) == "" && FindByYear(year, last_names) != "")
+        else if (FindByYear(year, names) != 0 && FindByYear(year, last_names) == 0)
         {
-            cout << FindByYear(year, last_names) << " with unknown first name" << endl;
+            return names[FindByYear(year, names)] + " with unknown last name";
         }
-        else if (FindByYear(year, names) != "" && FindByYear(year, last_names) == "")
+        else if (FindByYear(year, names) == 0 && FindByYear(year, last_names) != 0)
         {
-            cout << FindByYear(year, names) << " with unknown last name" << endl;
+            return last_names[FindByYear(year, last_names)] + " with unknown first name";
         }
         else
         {
-            cout << FindByYear(year, names) << " " << FindByYear(year, last_names) << endl;
+            return names[FindByYear(year, names)] + " " + last_names[FindByYear(year, last_names)];
         }
     }
 
@@ -85,4 +92,4 @@ int main()
     }
 
     return 0;
-}
+}   

@@ -5,33 +5,90 @@
 
 using namespace std;
 
-int main()
+int FindByYear(int year, map<int, string> m)
 {
-    int num;
-    map<vector<string>, int> stopsbuch;
-    cin >> num;
-    for (int i = 0; i < num; i++)
+    int answer = 0;
+    vector<int> prompt;
+    for (auto p : m)
     {
-        int amount;
-        cin >> amount;
-        vector<string> stops;
-        for (int j = 0; j < amount; j++)
+        prompt.push_back(p.first);
+    }
+
+    if (prompt.empty())
+    {
+        return answer;
+    }
+    else
+    {
+
+        for (auto i : prompt)
         {
-            string stop;
-            cin >> stop;
-            stops.push_back(stop);
+            if (i <= year)
+            {
+                answer = i;
+            }
         }
-        if (stopsbuch.count(stops) == 0)
+    }
+    return answer;
+}
+
+class Person
+{
+public:
+    void ChangeFirstName(int year, const string &first_name)
+    {
+        names[year] = first_name;
+    }
+    void ChangeLastName(int year, const string &last_name)
+    {
+        last_names[year] = last_name;
+    }
+    string GetFullName(int year)
+    {
+        if (FindByYear(year, names) == 0 && FindByYear(year, last_names) == 0)
         {
-            stopsbuch.erase(stops);
-            int s = stopsbuch.size();
-            stopsbuch[stops] = s + 1;
-            cout << "New bus " << s + 1 << endl;
+            return "Incognito";
+        }
+        else if (FindByYear(year, names) != 0 && FindByYear(year, last_names) == 0)
+        {
+            return names[FindByYear(year, names)] + " with unknown last name";
+        }
+        else if (FindByYear(year, names) == 0 && FindByYear(year, last_names) != 0)
+        {
+            return names[FindByYear(year, last_names)] + " with unknown first name";
         }
         else
         {
-            cout << "Already exists for " << stopsbuch[stops] << endl;
+            return names[FindByYear(year, names)] + " " + last_names[FindByYear(year, last_names)];
         }
+    }
+
+private:
+    map<int, string> names;
+    map<int, string> last_names;
+};
+
+int main()
+{
+    Person person;
+
+    person.ChangeFirstName(1965, "Polina");
+    person.ChangeLastName(1967, "Sergeeva");
+    for (int year : {1900, 1965, 1990})
+    {
+        cout << person.GetFullName(year) << endl;
+    }
+
+    person.ChangeFirstName(1970, "Appolinaria");
+    for (int year : {1969, 1970})
+    {
+        cout << person.GetFullName(year) << endl;
+    }
+
+    person.ChangeLastName(1968, "Volkova");
+    for (int year : {1969, 1970})
+    {
+        cout << person.GetFullName(year) << endl;
     }
 
     return 0;
